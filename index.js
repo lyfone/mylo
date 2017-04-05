@@ -1,6 +1,6 @@
 (function () {
   // The core
-  mylo = function (message, options) {
+  mylo = function (message) {
     // Convert to byte array
     if (typeof message == 'string') {
 
@@ -172,8 +172,8 @@
   mylo._blocksize = 16;
   mylo._digestsize = 16;
 
-  var mylohash = function (message, options) {
-    return mylo(message, options);
+  var mylohash = function (message) {
+    return mylo(message);
   }
 
   var nmylo = function (message, options) {
@@ -181,22 +181,38 @@
       console.log('argument must be string or number!');
       return 'argument error!'
     }
+    options = options || 16;
+
     var hash = [];
 
-    hash.push(mylohash(message, options));
 
-    for (let i = 0; i < 15; i++) {
-      let newHash = mylohash(hash[i], options);
 
-      hash.push(newHash);
+    for (let i = 0; i < options; i++) {
+      if (i == 0) {
+        hash.push(mylohash(message));
+      } else {
+        let newHash = mylohash(hash[i - 1]);
+
+        hash.push(newHash);
+        rehash(hash);
+      }
     }
 
     let result = '';
 
-    for (let i = 0; i < 16; i++) {
+    for (let i = 0; i < options; i++) {
       result = result + hash[i];
     }
     return handleResult(result);
+  }
+
+  var rehash = function (arr) {
+    if(arr.length == 1){
+
+    }
+    for (let i = arr.length - 2; i > -1; i--) {
+      arr[i] = mylohash(arr[i + 1]);
+    }
   }
 
   var handleResult = function (str) {

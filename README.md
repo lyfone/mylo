@@ -1,3 +1,3 @@
 # mylo
 
-### my encryption tool,using for myself!
+### my encryption tool,only using for myself !
